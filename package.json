@@ -8,5 +8,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "readline-sync": "^1.4.10",
+    "ws": "^8.18.1"
+  }
 }

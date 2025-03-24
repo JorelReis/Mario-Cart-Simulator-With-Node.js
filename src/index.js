@@ -1,193 +1,107 @@
-const player1 = {
-    NOME: "Mario",
-    VELOCIDADE: 4,
-    MANOBRABILIDADE: 3,
-    PODER: 3,
-    PONTOS : 0,
-};
+const WebSocket = require("ws");
+const readline = require("readline-sync");
+const players = require("./players");
 
-const player2 = {
-    NOME: "Luigi",
-    VELOCIDADE: 3,
-    MANOBRABILIDADE: 4,
-    PODER: 4,
-    PONTOS : 0,
-};
+const ws = new WebSocket("ws://localhost:8080");
 
+ws.on("open", () => {
+    console.log("✅ Conectado ao servidor WebSocket!");
+    chooseCharacter(); // O jogador escolhe seu personagem
+});
 
+ws.on("message", (message) => {
+    try {
+        const data = JSON.parse(message);
 
-// Objetivo : Rolar o dado de 1 a 6 para escolher os personagens. 
-//Declaramos a função e utilizamos o Math que é uma ferramenta do node para matemática. 
-// O .random sorteira um numero aleario de 0 a 1, então múltiplicamos por 6 e arredondamos com o .florr. Depois somamos com 1 porque o dado vai de 1-6 e nao de 0-5.
-// damos o return antes pois outras funções do lado de fora chamarão essa function. 
-//async para transformarmos essa função em assíncrona, e esperar uma coisa terminar para depois ela começar.
+        if (data.type === "confirmation") {
+            console.log(data.message);
+        } else if (data.type === "error") {
+            console.log(`❌ ${data.message}`);
+            chooseCharacter(); // Se der erro, escolhe novamente
+        } else if (data.type === "start_game") {
+            console.log(`\n${data.message}`);
+        } else if (data.type === "race_update") {
+            console.log(`\n${data.message}`); // Apenas exibe a rodada da corrida
+        } else if (data.type === "race_end") {
+            console.log(`\n${data.message}`);
+            startChat(); // Após a corrida, inicia o chat
+        } else if (data.type === "chat") {
+            console.log(`📩 Mensagem recebida: 💬 ${data.message}`);
+        }
 
-async function rollDice (){
-    return Math.floor(Math.random()*6) + 1;
+    } catch (error) {
+        console.log("⚠ Erro ao processar mensagem recebida.");
+    }
+});
+
+// Escolha de personagem
+function chooseCharacter() {
+    console.log(`\nEscolha seu personagem:`);
+
+    players.forEach((player, index) => {
+        console.log(`${index + 1}. ${player.NOME}`);
+    });
+
+    let choice;
+    do {
+        choice = parseInt(readline.question("Digite o número do personagem: ").trim(), 10);
+    } while (isNaN(choice) || choice < 1 || choice > players.length);
+
+    const chosenCharacter = players[choice - 1];
+
+    ws.send(JSON.stringify({ type: "character_choice", character: chosenCharacter.NOME }));
+
+    console.log(`✅ Você escolheu ${chosenCharacter.NOME}. Aguardando outro jogador...`);
 }
 
-//Função para gerar blocos aleatórios. 
+// Inicia o chat após a corrida
+function startChat() {
+    console.log("💬 O chat está aberto! Digite mensagens ou 'sair' para encerrar.");
+
+    // Criando uma entrada assíncrona para permitir mensagens recebidas enquanto escreve
+    process.stdin.resume();
+    process.stdin.setEncoding("utf8");
+
+    process.stdin.on("data", (message) => {
+        message = message.trim();
+        if (message.toLowerCase() === "sair") {
+            console.log("🚪 Você saiu do chat.");
+            process.stdin.pause();
+            return;
+        }
+        ws.send(JSON.stringify({ type: "chat", message }));
+    });
+}
+
+// Função que exibe o vencedor da corrida
+async function declareWinner(character1, character2) {
+    console.log("\n🏁 Resultado final:");
+    console.log(`${character1.NOME}: ${character1.PONTOS} ponto(s)`);
+    console.log(`${character2.NOME}: ${character2.PONTOS} ponto(s)`);
+
+    if (character1.PONTOS > character2.PONTOS) {
+        console.log(`\n🏆 ${character1.NOME} venceu a corrida! Parabéns!`);
+    } else if (character2.PONTOS > character1.PONTOS) {
+        console.log(`\n🏆 ${character2.NOME} venceu a corrida! Parabéns!`);
+    } else {
+        console.log("🏁 A corrida terminou em empate!");
+    }
+}
+
+// Função para gerar blocos aleatórios (Reta, Curva ou Confronto)
 async function getRandomBlock() {
-    let random = Math.random()
-    let result
-
-    //Estrutura condicional para testar um ou mais valores
-    switch (true) {
-        case random < 0.33:
-            result = "RETA"
-            break;
-        case random < 0.66:
-            result = "CURVA"
-            break;
-        default:
-            result = "CONFRONTO"
-    }
-
-    return result
+    let random = Math.random();
+    if (random < 0.33) return "RETA";
+    if (random < 0.66) return "CURVA";
+    return "CONFRONTO";
 }
 
+// Função para rolar o dado (de 1 a 6)
+async function rollDice() {
+    return Math.floor(Math.random() * 6) + 1;
+}
 
+// Função para exibir o resultado da rolagem do dado
 async function logRollResult(characterName, block, diceResult, attribute) {
-    console.log(`${characterName} 🎲 rolou um dado de ${block} ${diceResult} + ${attribute} = ${diceResult + attribute}`)//expressão js
+    console.log(`${characterName} 🎲 rolou um dado de ${block} ${diceResult} + ${attribute} = ${diceResult + attribute}`);
 }
-
-
-// Função motor para corrida, essa é uma função que recebe parametros, ou seja, outras funções de fora mandaram coisas para ele.
-// Usaremos o for, para fazer um laço de repetição. 
-
-async function playRaceEngine(character1, character2) {
-    for (let round = 1; round <= 5; round++) {
-      console.log(`🏁 Rodada ${round}`);
-  
-      // sortear bloco
-      let block = await getRandomBlock();
-      console.log(`Bloco: ${block}`);
-  
-      // rolar os dados
-      let diceResult1 = await rollDice();
-      let diceResult2 = await rollDice();
-  
-      //teste de habilidade
-      let totalTestSkill1 = 0;
-      let totalTestSkill2 = 0;
-  
-      if (block === "RETA") {
-        totalTestSkill1 = diceResult1 + character1.VELOCIDADE;
-        totalTestSkill2 = diceResult2 + character2.VELOCIDADE;
-  
-        await logRollResult(
-          character1.NOME,
-          "velocidade",
-          diceResult1,
-          character1.VELOCIDADE
-        );
-  
-        await logRollResult(
-          character2.NOME,
-          "velocidade",
-          diceResult2,
-          character2.VELOCIDADE
-        );
-      }
-  
-      if (block === "CURVA") {
-        totalTestSkill1 = diceResult1 + character1.MANOBRABILIDADE;
-        totalTestSkill2 = diceResult2 + character2.MANOBRABILIDADE;
-  
-        await logRollResult(
-          character1.NOME,
-          "manobrabilidade",
-          diceResult1,
-          character1.MANOBRABILIDADE
-        );
-  
-        await logRollResult(
-          character2.NOME,
-          "manobrabilidade",
-          diceResult2,
-          character2.MANOBRABILIDADE
-        );
-      }
-  
-      if (block === "CONFRONTO") {
-        let powerResult1 = diceResult1 + character1.PODER;
-        let powerResult2 = diceResult2 + character2.PODER;
-  
-        console.log(`${character1.NOME} confrontou com ${character2.NOME}! 🥊`);
-  
-        await logRollResult(
-          character1.NOME,
-          "poder",
-          diceResult1,
-          character1.PODER
-        );
-  
-        await logRollResult(
-          character2.NOME,
-          "poder",
-          diceResult2,
-          character2.PODER
-        );
-  
-        if (powerResult1 > powerResult2 && character2.PONTOS > 0) {
-          console.log(
-            `${character1.NOME} venceu o confronto! ${character2.NOME} perdeu 1 ponto 🐢`
-          );
-          character2.PONTOS--;
-        }
-  
-        if (powerResult2 > powerResult1 && character1.PONTOS > 0) {
-          console.log(
-            `${character2.NOME} venceu o confronto! ${character1.NOME} perdeu 1 ponto 🐢`
-          );
-          character1.PONTOS--;
-        }
-  
-        console.log(
-          powerResult2 === powerResult1
-            ? "Confronto empatado! Nenhum ponto foi perdido"
-            : ""
-        );
-      }
-  
-      // verificando o vencedor
-      if (totalTestSkill1 > totalTestSkill2) {
-        console.log(`${character1.NOME} marcou um ponto!`);
-        character1.PONTOS++;
-      } else if (totalTestSkill2 > totalTestSkill1) {
-        console.log(`${character2.NOME} marcou um ponto!`);
-        character2.PONTOS++;
-      }
-  
-      console.log("-----------------------------");
-    }
-  }
-
-  async function declareWinner(character1, character2) {
-    console.log("Resultado final:")
-    console.log(`${character1.NOME}: ${character1.PONTOS} ponto(S)`)
-    console.log(`${character2.NOME}: ${character2.PONTOS} ponto(S)`)
-
-    if(character1.PONTOS > character2.PONTOS){
-      console.log(`\n${character1.NOME} venceu a corrida! Parabéns 🏆`)
-    } else if(character2.PONTOS > character1.NOME){
-      console.log(`\n${character2.NOME} venceu a corrida! Parabéns 🏆`)
-    }else{
-      console.log("A corrida terminou em empate");
-    }
-    
-  }
-
-
-//Função principal (ela que chama as outras funções):
-//função entre parenteses com parenteses no final é uma função auto invocácvel. Ela se chama sozinha ao executar o index.js
-//Function chain, uma function dentro da outra. 
-(async function main() {
-    console.log(
-        `🏁🚨 Corrida entre ${player1.NOME} e ${player2.NOME} começando...\n`
-    );
-// Await para esperar esse código executar para depois ele ir para a próxima coisa.
-    await playRaceEngine(player1, player2);
-    await declareWinner(player1,player2);
-})()
-
