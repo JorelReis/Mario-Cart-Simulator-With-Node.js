@@ -7,7 +7,8 @@
             </td>
             <td>
                 <b>Objetivo:</b>
-                <p>Mario Kart é uma série de jogos de corrida desenvolvida e publicada pela Nintendo. O  desafio será criar uma lógica de um jogo de vídeo game para simular corridas de Mario Kart, levando em consideração as regras e mecânicas abaixo.</p>
+                <p>🏎️ Mario Kart Simulator - Node.js & WebSocket
+Este projeto é uma simulação de corrida inspirada no Mario Kart, utilizando Node.js e WebSocket para permitir partidas entre dois jogadores em tempo real.</p>
             </td>
         </tr>
     </table>
@@ -76,10 +77,10 @@
 
 <p></p>
 
-🏎️ Mario Kart Simulator - Node.js & WebSocket
-Este projeto é uma simulação de corrida inspirada no Mario Kart, utilizando Node.js e WebSocket para permitir partidas entre dois jogadores em tempo real.
+
 
 🚀 Tecnologias Utilizadas
+
 Node.js - Para rodar o servidor e a lógica do jogo.
 
 WebSocket - Para comunicação em tempo real entre os jogadores.
@@ -90,8 +91,10 @@ Readline-Sync - Para entrada de dados no terminal.
 
 Git/GitHub - Para versionamento e compartilhamento do código.
 
+
 🎯 Objetivo
 Criar uma lógica de jogo que simule corridas entre personagens do Mario Kart, levando em consideração regras de velocidade, manobrabilidade e poder.
+
 
 🏁 Como Funciona?
 Dois jogadores se conectam ao servidor WebSocket e escolhem seus personagens.
@@ -104,14 +107,6 @@ O jogador com maior valor vence a rodada e ganha um ponto.
 
 No final, quem tiver mais pontos vence a corrida!
 
-🏎️ Personagens e Atributos
-Personagem	Velocidade	Manobrabilidade	Poder
-Mario	4	3	3
-Luigi	3	4	4
-Peach	3	4	2
-Yoshi	2	4	3
-Bowser	5	2	5
-Donkey Kong	2	2	5
 ⚙️ Regras do Jogo
 1️⃣ Escolha de Personagem
 
@@ -143,29 +138,16 @@ Empates são possíveis! 🏁
 
 📡 Como Jogar?
 Clone o repositório:
-
-sh
-Copiar
-Editar
 git clone https://github.com/seu-usuario/mario-kart-simulator.git
 cd mario-kart-simulator
+
 Instale as dependências:
-
-sh
-Copiar
-Editar
 npm install
+
 Inicie o servidor:
-
-sh
-Copiar
-Editar
 node src/server.js
-Abra dois terminais e rode os jogadores:
 
-sh
-Copiar
-Editar
+Abra dois terminais e rode os jogadores:
 node src/index.js
 Escolha seu personagem e jogue! 🎮
 
