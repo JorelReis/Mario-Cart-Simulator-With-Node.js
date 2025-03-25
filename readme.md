@@ -93,10 +93,12 @@ Git/GitHub - Para versionamento e compartilhamento do código.
 
 
 🎯 Objetivo
+
 Criar uma lógica de jogo que simule corridas entre personagens do Mario Kart, levando em consideração regras de velocidade, manobrabilidade e poder.
 
 
 🏁 Como Funciona?
+
 Dois jogadores se conectam ao servidor WebSocket e escolhem seus personagens.
 
 O jogo sorteia 5 rodadas com diferentes tipos de pistas: Reta, Curva ou Confronto.
@@ -108,6 +110,7 @@ O jogador com maior valor vence a rodada e ganha um ponto.
 No final, quem tiver mais pontos vence a corrida!
 
 ⚙️ Regras do Jogo
+
 1️⃣ Escolha de Personagem
 
 Dois jogadores escolhem um personagem cada.
