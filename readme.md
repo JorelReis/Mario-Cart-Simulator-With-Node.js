@@ -76,28 +76,100 @@
 
 <p></p>
 
-<h3>🕹️ Regras & mecânicas:</h3>
+🏎️ Mario Kart Simulator - Node.js & WebSocket
+Este projeto é uma simulação de corrida inspirada no Mario Kart, utilizando Node.js e WebSocket para permitir partidas entre dois jogadores em tempo real.
 
-<b>Jogadores:</b>
+🚀 Tecnologias Utilizadas
+Node.js - Para rodar o servidor e a lógica do jogo.
 
-<input type="checkbox" id="jogadores-item" />
-<label for="jogadores-item">O Computador deve receber dois personagens para disputar a corrida em um objeto cada</label>
+WebSocket - Para comunicação em tempo real entre os jogadores.
 
-<b>Pistas:</b>
+JavaScript - Para implementar as mecânicas de jogo e interatividade.
 
-<ul>
-  <li><input type="checkbox" id="pistas-1-item" /> <label for="pistas-1-item">Os personagens irão correr em uma pista aleatória de 5 rodadas</label></li>
-  <li><input type="checkbox" id="pistas-2-item" /> <label for="pistas-2-item">A cada rodada, será sorteado um bloco da pista que pode ser uma reta, curva ou confronto</label>
-    <ul>
-      <li><input type="checkbox" id="pistas-2-1-item" /> <label for="pistas-2-1-item">Caso o bloco da pista seja uma RETA, o jogador deve jogar um dado de 6 lados e somar o atributo VELOCIDADE, quem vencer ganha um ponto</label></li>
-      <li><input type="checkbox" id="pistas-2-2-item" /> <label for="pistas-2-2-item">Caso o bloco da pista seja uma CURVA, o jogador deve jogar um dado de 6 lados e somar o atributo MANOBRABILIDADE, quem vencer ganha um ponto</label></li>
-      <li><input type="checkbox" id="pistas-2-3-item" /> <label for="pistas-2-3-item">Caso o bloco da pista seja um CONFRONTO, o jogador deve jogar um dado de 6 lados e somar o atributo PODER, quem perder, perde um ponto</label></li>
-      <li><input type="checkbox" id="pistas-2-3-item" /> <label for="pistas-2-3-item">Nenhum jogador pode ter pontuação negativa (valores abaixo de 0)</label></li>
-    </ul>
-  </li>
-</ul>
+Readline-Sync - Para entrada de dados no terminal.
 
-<b>Condição de vitória:</b>
+Git/GitHub - Para versionamento e compartilhamento do código.
 
-<input type="checkbox" id="vitoria-item" />
-<label for="vitoria-item">Ao final, vence quem acumulou mais pontos</label>
+🎯 Objetivo
+Criar uma lógica de jogo que simule corridas entre personagens do Mario Kart, levando em consideração regras de velocidade, manobrabilidade e poder.
+
+🏁 Como Funciona?
+Dois jogadores se conectam ao servidor WebSocket e escolhem seus personagens.
+
+O jogo sorteia 5 rodadas com diferentes tipos de pistas: Reta, Curva ou Confronto.
+
+Em cada rodada, os jogadores jogam um dado e somam ao atributo correspondente ao tipo da pista.
+
+O jogador com maior valor vence a rodada e ganha um ponto.
+
+No final, quem tiver mais pontos vence a corrida!
+
+🏎️ Personagens e Atributos
+Personagem	Velocidade	Manobrabilidade	Poder
+Mario	4	3	3
+Luigi	3	4	4
+Peach	3	4	2
+Yoshi	2	4	3
+Bowser	5	2	5
+Donkey Kong	2	2	5
+⚙️ Regras do Jogo
+1️⃣ Escolha de Personagem
+
+Dois jogadores escolhem um personagem cada.
+
+2️⃣ Rodadas
+
+São 5 rodadas com trechos aleatórios da pista:
+
+RETA: Testa a Velocidade.
+
+CURVA: Testa a Manobrabilidade.
+
+CONFRONTO: Testa o Poder.
+
+3️⃣ Mecânica dos Dados
+
+Em cada rodada, os jogadores jogam um dado de 6 lados.
+
+O resultado do dado é somado ao atributo correspondente do personagem.
+
+Quem tiver o maior valor ganha um ponto.
+
+4️⃣ Condição de Vitória
+
+Ao final das 5 rodadas, quem tiver mais pontos vence a corrida.
+
+Empates são possíveis! 🏁
+
+📡 Como Jogar?
+Clone o repositório:
+
+sh
+Copiar
+Editar
+git clone https://github.com/seu-usuario/mario-kart-simulator.git
+cd mario-kart-simulator
+Instale as dependências:
+
+sh
+Copiar
+Editar
+npm install
+Inicie o servidor:
+
+sh
+Copiar
+Editar
+node src/server.js
+Abra dois terminais e rode os jogadores:
+
+sh
+Copiar
+Editar
+node src/index.js
+Escolha seu personagem e jogue! 🎮
+
+💬 Chat Após a Corrida
+Depois que a corrida termina, os jogadores podem conversar no chat integrado.
+
+O chat suporta mensagens em tempo real até que um dos jogadores digite "sair".
