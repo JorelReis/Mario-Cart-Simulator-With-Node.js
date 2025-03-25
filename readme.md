@@ -142,7 +142,8 @@ Empates são possíveis! 🏁
 📡 Como Jogar?
 Clone o repositório:
 git clone [https://github.com/seu-usuario/mario-kart-simulator.git](https://github.com/JorelReis/Mario-Cart-Simulator-With-Node.js/tree/main)
-cd mario-kart-simulator
+
+cd MarioCartSimulatorWithNode.js
 
 Instale as dependências:
 npm install
